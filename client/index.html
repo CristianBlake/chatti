@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatti</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';  
+
+        const socket = io();
+
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+
+        socket.on('chat message', (msg) => {
+            const item = `<li>${msg}</li>`;
+            messages.insertAdjacentHTML('beforeend', item);
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if ( input.value ) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        });
+    </script>
+</head>
+<body class="bg-neutral-900 flex flex-col items-center h-max">
+    <h1 class="text-white text-6xl font-bold">Chatti</h1>
+    <section id="chat" class="p-3 relative bg-zinc-800 mt-5 w-[30rem] h-[50rem]">
+        <ul id="messages" class="text-white"></ul>
+        <form id="form" class="flex gap-3 absolute bottom-0 flex right-0 left-0 m-5">
+            <input type="text" name="message" id="input" placeholder="Type a message" autocomplete="off" class="bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white" />
+            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enviar</button>
+        </form>
+    </section>
+</body>
+</html>
